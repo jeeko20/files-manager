@@ -35,12 +35,14 @@ const HIDDEN_NAMES = new Set([
   "voisinage d'impression",
   'voisinage réseau',
   'intelgraphicsprofiles',
-  'ntuser.ini'
+  'ntuser.ini',
+  '.git'
 ])
 
 function hiddenName(name: string): boolean {
   const lower = name.toLowerCase()
-  return name.startsWith('.') || lower.startsWith('ntuser.dat') || HIDDEN_NAMES.has(lower)
+  const dotHidden = process.platform !== 'win32' && name.startsWith('.')
+  return dotHidden || lower.startsWith('ntuser.dat') || HIDDEN_NAMES.has(lower)
 }
 
 function toEntry(dir: string, name: string, st: import('node:fs').Stats, isSymlink: boolean): Entry {
