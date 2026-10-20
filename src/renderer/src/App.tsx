@@ -168,7 +168,7 @@ export default function App(): ReactElement {
       setSettings(merged)
       applyTheme(info, merged.theme)
       const params = new URLSearchParams(window.location.search)
-      const start = params.get('path') || merged.lastPath || 'home:'
+      const start = params.get('path') || 'home:'
       const tab = createTab(start, merged)
       setTabs([tab])
       setActiveId(tab.id)
