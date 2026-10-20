@@ -20,6 +20,7 @@ export interface DirListing {
   entries: Entry[]
   parent: string | null
   error: string | null
+  noMedia?: boolean
 }
 
 export interface Drive {

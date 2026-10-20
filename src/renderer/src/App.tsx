@@ -11,6 +11,7 @@ import type {
 } from '@shared/types'
 import { AddressBar, CommandBar, StatusBar, TabStrip } from './Chrome'
 import { ConfirmDialog, DrivePropertiesDialog, PropertiesDialog } from './Dialogs'
+import { DriveEmptyView } from './DriveEmptyView'
 import { FileView, PreviewPane } from './FileView'
 import { HomeView } from './HomeView'
 import { NavPane } from './NavPane'
@@ -38,6 +39,7 @@ interface Tab {
   view: ViewMode
   sortKey: SortKey
   sortDir: SortDir
+  noMedia: boolean
 }
 
 type DialogState =
@@ -84,7 +86,8 @@ function createTab(path: string, settings: Settings): Tab {
     results: null,
     view: settings.view,
     sortKey: settings.sortKey,
-    sortDir: settings.sortDir
+    sortDir: settings.sortDir,
+    noMedia: false
   }
 }
 
@@ -238,6 +241,7 @@ export default function App(): ReactElement {
               anchor: null,
               query: '',
               results: null,
+              noMedia: false,
               history,
               index: push ? history.length - 1 : tab.index
             }
@@ -245,7 +249,7 @@ export default function App(): ReactElement {
         )
         return
       }
-      updateTab(id, { loading: true, error: null })
+      updateTab(id, { loading: true, error: null, noMedia: false })
       try {
         const listing = await window.api.list(target, showHiddenRef.current)
         setTabs((current) =>
@@ -269,6 +273,7 @@ export default function App(): ReactElement {
               anchor: null,
               query: '',
               results: null,
+              noMedia: listing.noMedia ?? false,
               history,
               index: push ? history.length - 1 : tab.index
             }
@@ -323,7 +328,7 @@ export default function App(): ReactElement {
   const goUp = useCallback(() => {
     if (!activeTab || isVirtualPath(activeTab.path)) return
     const parent = activeTab.parent ?? dirname(activeTab.path)
-    navigate(activeTab.id, parent)
+    navigate(activeTab.id, normalizePath(parent) === normalizePath(activeTab.path) ? 'thispc:' : parent)
   }, [activeTab, navigate])
 
   const entries = useMemo(() => {
@@ -347,7 +352,7 @@ export default function App(): ReactElement {
 
   useEffect(() => {
     if (!activeTab) return
-    if (isVirtualPath(activeTab.path)) {
+    if (isVirtualPath(activeTab.path) || activeTab.noMedia) {
       setSearching(false)
       return
     }
@@ -440,7 +445,7 @@ export default function App(): ReactElement {
   }, [renaming, activeTab, loadDir, updateTab, notify, errorText])
 
   const newFolder = useCallback(async () => {
-    if (!activeTab || isVirtualPath(activeTab.path)) return
+    if (!activeTab || isVirtualPath(activeTab.path) || activeTab.noMedia) return
     const existing = new Set(activeTab.entries.map((entry) => entry.name.toLowerCase()))
     let name = t.newFolder
     let index = 2
@@ -1164,6 +1169,8 @@ export default function App(): ReactElement {
               onOpen={(target) => navigate(activeTab.id, target)}
               onDriveContext={driveContext}
             />
+          ) : activeTab.noMedia ? (
+            <DriveEmptyView path={activeTab.path} onRefresh={refresh} />
           ) : (
             <FileView
               entries={entries}
@@ -1191,14 +1198,14 @@ export default function App(): ReactElement {
               onDropPaths={(paths, dest, mode) => void dropPaths(paths, dest, mode)}
             />
           )}
-          {settings.showPreview && !isThisPc && !isHome && (
+          {settings.showPreview && !isThisPc && !isHome && !activeTab.noMedia && (
             <PreviewPane entry={previewEntry} onClose={() => patchSettings({ showPreview: false })} />
           )}
         </section>
       </div>
 
       <StatusBar
-        visible={isHome ? -1 : isThisPc ? drives.length : entries.length}
+        visible={isHome || activeTab.noMedia ? -1 : isThisPc ? drives.length : entries.length}
         selected={activeTab.selection.length}
         sizeLabel={selectedSize}
         searching={searching || !!activeTab.query}

@@ -86,6 +86,8 @@ Limites de l’analyse (à conserver) :
   clic molette, menu contextuel (nouvel onglet, dupliquer, fermer, fermer les autres).
 - **Vue Ce PC** : dossiers personnels et lecteurs en cartes, avec nom du volume, jauge d’occupation
   et espace libre/total ; double-clic pour ouvrir, menu contextuel (ouvrir, nouvel onglet, propriétés).
+- **Lecteurs optiques** : un lecteur CD/DVD sans disque s’ouvre sur « Aucun disque » avec un bouton
+  **Réessayer**, au lieu d’afficher une erreur d’accès refusé ; le contenu s’affiche dès qu’un disque est inséré.
 - **Barre de commandes** : Nouveau, Couper, Copier, Coller, Renommer, Supprimer, Partager (désactivé),
   Trier, Affichage, « … ».
 - **Affichages** : Détails (colonnes triables), Liste, Vignettes, Icônes ; tailles d’icônes.

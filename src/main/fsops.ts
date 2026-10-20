@@ -98,10 +98,18 @@ export async function listDir(dir: string, showHidden: boolean): Promise<DirList
     const parent = absolute === root ? null : dirname(absolute)
     return { dir: absolute, entries: visible, parent, error: null }
   } catch (error) {
+    const root = parse(absolute).root
+    const parent = absolute === root ? null : dirname(absolute)
+    if (process.platform === 'win32') {
+      const disk = winDiskFor(absolute)
+      if (disk && diskType(disk) === 5) {
+        return { dir: absolute, entries: [], parent, error: null, noMedia: true }
+      }
+    }
     return {
       dir: absolute,
       entries: [],
-      parent: dirname(absolute) === absolute ? null : dirname(absolute),
+      parent,
       error: (error as NodeJS.ErrnoException).code || String(error)
     }
   }
