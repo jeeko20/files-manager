@@ -73,7 +73,7 @@ Limites de l’analyse (à conserver) :
 - **Volet de navigation** : Accueil, Galerie, Accès rapide (épinglage persistant), **Ce PC**
   (titre cliquable) avec disques nommés comme l’Explorateur (« Disque local (C:) », « jee (D:) »),
   dossiers utilisateur, Réseau.
-- **Page Accueil** (comme Windows 11) :
+- **Page Accueil** (comme Windows 11), ouverte au démarrage :
   - **Accès rapide** : dossiers épinglés + dossiers personnels (Bureau, Documents, Téléchargements,
     Images, Musique, Vidéos), avec libellés traduits ;
   - **Favoris** : ajout/retrait par clic droit sur un fichier ou un dossier (« Ajouter aux favoris » /

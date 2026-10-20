@@ -145,10 +145,8 @@ app.whenReady().then(async () => {
     Menu.setApplicationMenu(null)
   }
 
-  const settings = await readSettings()
   const argvPath = process.argv.find((a) => a.startsWith('--path='))?.slice(7)
-  const candidate = argvPath || settings.lastPath || app.getPath('home')
-  const start = existsSync(candidate) ? candidate : app.getPath('home')
+  const start = argvPath && existsSync(argvPath) ? argvPath : undefined
   createWindow(start)
 
   app.on('activate', () => {
