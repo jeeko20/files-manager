@@ -1,0 +1,21 @@
+# Dépendances
+node_modules/
+
+# Builds et paquets
+out/
+dist/
+release/
+
+# Journaux et artefacts de test
+*.log
+*.err
+smoke*.out
+
+# Métadonnées système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs
+.idea/
+.vscode/
